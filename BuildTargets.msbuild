@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
- <Target Name="Publish">
-    <Message Text="Configuration: $(Configuration)" />
-    <!-- Platform=Any Cpu for Solution Files, Platform=AnyCpu for project files-->
-    <MSBuild Projects="$(Projects)" Properties="Platform=AnyCPU;
-                                                Configuration=$(Configuration);
-                                                AutoParameterizationWebConfigConnectionStrings=False;
-                                                DeployOnBuild=True;
-                                                DeployTarget=Package;
-                                                PackageLocation=_package;
-                                                PackageAsSingleFile=True;" />
- </Target>
+	<Target Name="Publish">
+		<Message Text="Configuration: $(Configuration)" />
+		<!-- Platform=Any Cpu for Solution Files, Platform=AnyCpu for project files-->
+		<MSBuild Projects="$(Projects)" Properties="Platform=AnyCPU;
+													Configuration=$(Configuration);
+													AutoParameterizationWebConfigConnectionStrings=False;
+													DeployOnBuild=True;
+													DeployTarget=Package;
+													PackageLocation=_package;
+													PackageAsSingleFile=True;" />
+	</Target>
+ 
+	<UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v14.0\Web\Microsoft.Web.Publishing.Tasks.dll"/>
+
+	<Target Name="Transform">
+		<TransformXml Source="$(TransformSourcePath)Web.config"
+							Transform="$(TransformSourcePath)Web.$(Configuration).config"
+							Destination="$(PackagePath)Web.config"
+							StackTrace="false" />
+	</Target>
 </Project>
