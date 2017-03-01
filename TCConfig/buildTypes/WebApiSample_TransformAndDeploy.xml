@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="edfeaba1-018f-453c-9694-dd3ca9e33c36" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/10.0/project-config.xsd">
+  <name>TransformAndDeploy</name>
+  <description />
+  <settings>
+    <parameters>
+      <param name="env.ClientDestinationSite" value="localhostClient" />
+      <param name="env.ClientPackagePath" value="WebApiClient" />
+      <param name="env.ClientTransformSourcePath" value="Transforms\WebApiClient" />
+      <param name="env.Configuration" value="DEV" spec="select label_3='Production' display='prompt' label='Deployment ENV' data_1='DEV' label_1='Development' data_3='PRD'" />
+      <param name="env.DestinationServer" value="127.0.0.1" />
+      <param name="env.ServerDestinationSite" value="localhostServer" />
+      <param name="env.ServerPackagePath" value="WebApiServer" />
+      <param name="env.ServerTransformSourcePath" value="Transforms\WebApiServer" />
+    </parameters>
+    <build-runners>
+      <runner id="RUNNER_5" name="Transform WebApiClient" type="MSBuild">
+        <parameters>
+          <param name="build-file-path" value="\deploy\BuildTargets.msbuild" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Sort" value="0" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Type" value="1" />
+          <param name="dotNetCoverage.NCover.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover3.args" value="//ias .*" />
+          <param name="dotNetCoverage.NCover3.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover3.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.reporter.executable.args" value="//or FullCoverageReport:Html:{teamcity.report.path}" />
+          <param name="dotNetCoverage.PartCover.Reg" value="selected" />
+          <param name="dotNetCoverage.PartCover.includes" value="[*]*" />
+          <param name="dotNetCoverage.PartCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.PartCover.platformVersion" value="v2.0" />
+          <param name="msbuild_version" value="14.0" />
+          <param name="run-platform" value="x64" />
+          <param name="runnerArgs"><![CDATA[/t:Transform
+/p:Configuration=%env.Configuration%
+/p:Platform="AnyCPU"
+/p:PackagePath=..\%env.ClientPackagePath%\
+/p:TransformSourcePath=..\%env.ClientTransformSourcePath%\]]></param>
+          <param name="targets" value="Transform" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="toolsVersion" value="14.0" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_7" name="Transform WebApiServer" type="MSBuild">
+        <parameters>
+          <param name="build-file-path" value="\deploy\BuildTargets.msbuild" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Sort" value="0" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Type" value="1" />
+          <param name="dotNetCoverage.NCover.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover3.args" value="//ias .*" />
+          <param name="dotNetCoverage.NCover3.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover3.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.reporter.executable.args" value="//or FullCoverageReport:Html:{teamcity.report.path}" />
+          <param name="dotNetCoverage.PartCover.Reg" value="selected" />
+          <param name="dotNetCoverage.PartCover.includes" value="[*]*" />
+          <param name="dotNetCoverage.PartCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.PartCover.platformVersion" value="v2.0" />
+          <param name="msbuild_version" value="14.0" />
+          <param name="run-platform" value="x64" />
+          <param name="runnerArgs"><![CDATA[/t:Transform
+/p:Configuration=%env.Configuration%
+/p:Platform="AnyCPU"
+/p:PackagePath=..\%env.ServerPackagePath%\
+/p:TransformSourcePath=..\%env.ServerTransformSourcePath%\]]></param>
+          <param name="targets" value="Transform" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="toolsVersion" value="14.0" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_6" name="Deploy WebApiClient" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="&quot;C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe&quot; -verb:sync -source:contentPath=&quot;%teamcity.build.workingDir%\%env.ClientPackagePath%\&quot; -dest:contentPath=&quot;%env.ClientDestinationSite%&quot;,computername=&quot;%env.DestinationServer%&quot;" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_8" name="Deploy WebApiServer" type="simpleRunner">
+        <parameters>
+          <param name="script.content" value="&quot;C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe&quot; -verb:sync -source:contentPath=&quot;%teamcity.build.workingDir%\%env.ServerPackagePath%\&quot; -dest:contentPath=&quot;%env.ServerDestinationSite%&quot;,computername=&quot;%env.DestinationServer%&quot;" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="use.custom.script" value="true" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings />
+    <requirements />
+    <build-triggers />
+    <artifact-dependencies>
+      <dependency id="ARTIFACT_DEPENDENCY_1" sourceBuildTypeId="WebApiSample_BuildAndPublish" cleanDestination="true">
+        <revisionRule name="lastSuccessful" revision="latest.lastSuccessful" />
+        <artifact sourcePath="WebApiClient.zip!**=&gt;\WebApiClient&#xD;&#xA;Transforms.zip!/WebApiClient/=&gt;\Transforms\WebApiClient&#xD;&#xA;WebApiServer.zip!**=&gt;\WebApiServer&#xD;&#xA;Transforms.zip!/WebApiServer/=&gt;\Transforms\WebApiServer&#xD;&#xA;deploy.zip!**=&gt;\deploy" />
+      </dependency>
+    </artifact-dependencies>
+    <cleanup />
+  </settings>
+</build-type>
+

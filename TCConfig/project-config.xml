@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="3457f3e6-8c65-4dd4-ada9-4ec91536ebae" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/10.0/project-config.xsd">
+  <name>WebApiSample</name>
+  <parameters />
+  <cleanup />
+</project>
+

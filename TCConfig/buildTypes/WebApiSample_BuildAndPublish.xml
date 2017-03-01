@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build-type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uuid="33ba662d-808d-4fe3-ab68-2a95b866fd6b" xsi:noNamespaceSchemaLocation="http://www.jetbrains.com/teamcity/schemas/10.0/project-config.xsd">
+  <name>BuildAndPublish</name>
+  <description />
+  <settings>
+    <options>
+      <option name="artifactRules" value="WebApiClient/obj/Release/Package/PackageTmp =&gt; WebApiClient.zip&#xA;WebApiClient/Web.*.config =&gt; Transforms.zip!/WebApiClient/&#xA;WebApiClient/Web.config =&gt; Transforms.zip!/WebApiClient/&#xA;WebApiServer/obj/Release/Package/PackageTmp =&gt; WebApiServer.zip&#xA;WebApiServer/Web.*.config =&gt; Transforms.zip!/WebApiServer/&#xA;WebApiServer/Web.config =&gt; Transforms.zip!/WebApiServer/&#xA;BuildTargets.msbuild =&gt; deploy.zip" />
+      <option name="shouldFailBuildOnAnyErrorMessage" value="true" />
+      <option name="shouldFailBuildOnBadExitCode" value="false" />
+    </options>
+    <parameters />
+    <build-runners>
+      <runner id="RUNNER_3" name="Install Packages" type="jb.nuget.installer">
+        <parameters>
+          <param name="nuget.path" value="%teamcity.tool.NuGet.CommandLine.DEFAULT%" />
+          <param name="nuget.updatePackages.mode" value="sln" />
+          <param name="nuget.use.restore" value="restore" />
+          <param name="sln.path" value="WebApiSample.sln" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="toolPathSelector" value="%teamcity.tool.NuGet.CommandLine.DEFAULT%" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_1" name="Build" type="MSBuild">
+        <parameters>
+          <param name="build-file-path" value="WebApiSample.sln" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Sort" value="0" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Type" value="1" />
+          <param name="dotNetCoverage.NCover.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover3.args" value="//ias .*" />
+          <param name="dotNetCoverage.NCover3.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover3.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.reporter.executable.args" value="//or FullCoverageReport:Html:{teamcity.report.path}" />
+          <param name="dotNetCoverage.PartCover.Reg" value="selected" />
+          <param name="dotNetCoverage.PartCover.includes" value="[*]*" />
+          <param name="dotNetCoverage.PartCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.PartCover.platformVersion" value="v2.0" />
+          <param name="msbuild_version" value="14.0" />
+          <param name="run-platform" value="x64" />
+          <param name="runnerArgs" value="/p:Configuration=Release" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="teamcity.tests.runRiskGroupTestsFirst" value="recentlyFailed" />
+          <param name="toolsVersion" value="14.0" />
+        </parameters>
+      </runner>
+      <runner id="RUNNER_4" name="Publish" type="MSBuild">
+        <parameters>
+          <param name="build-file-path" value="BuildTargets.msbuild" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Sort" value="0" />
+          <param name="dotNetCoverage.NCover.HTMLReport.File.Type" value="1" />
+          <param name="dotNetCoverage.NCover.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.Reg" value="selected" />
+          <param name="dotNetCoverage.NCover3.args" value="//ias .*" />
+          <param name="dotNetCoverage.NCover3.platformBitness" value="x86" />
+          <param name="dotNetCoverage.NCover3.platformVersion" value="v2.0" />
+          <param name="dotNetCoverage.NCover3.reporter.executable.args" value="//or FullCoverageReport:Html:{teamcity.report.path}" />
+          <param name="dotNetCoverage.PartCover.Reg" value="selected" />
+          <param name="dotNetCoverage.PartCover.includes" value="[*]*" />
+          <param name="dotNetCoverage.PartCover.platformBitness" value="x86" />
+          <param name="dotNetCoverage.PartCover.platformVersion" value="v2.0" />
+          <param name="msbuild_version" value="14.0" />
+          <param name="run-platform" value="x64" />
+          <param name="runnerArgs" value="/t:Publish /p:Configuration=Release /p:Platform=&quot;AnyCPU&quot; /p:Projects=&quot;%teamcity.build.workingDir%\WebApiClient\WebApiClient.vbproj;%teamcity.build.workingDir%\WebApiServer\WebApiServer.vbproj&quot;" />
+          <param name="targets" value="Publish" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="toolsVersion" value="14.0" />
+        </parameters>
+      </runner>
+    </build-runners>
+    <vcs-settings>
+      <vcs-entry-ref root-id="WebApiSample_PersonalGit" />
+    </vcs-settings>
+    <requirements />
+    <build-triggers />
+    <cleanup />
+  </settings>
+</build-type>
+
